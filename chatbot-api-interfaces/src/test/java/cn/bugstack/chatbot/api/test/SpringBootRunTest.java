@@ -52,4 +52,9 @@ public class SpringBootRunTest {
         }
     }
 
+    @Test
+    public void test_answerComment() throws IOException {
+        boolean res = zsxqApi.answerComment(cookie, "811228282844122", "查理曼");
+    }
+
 }

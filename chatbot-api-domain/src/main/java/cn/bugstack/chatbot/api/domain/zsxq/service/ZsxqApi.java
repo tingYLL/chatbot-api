@@ -89,4 +89,39 @@ public class ZsxqApi implements IZsxqApi {
         }
     }
 
+
+    //因为非星球版主不会看到提问也不能回答提问,所以这里用回复评论的方式
+    public boolean answerComment(String cookie, String topicId, String text) throws IOException {
+        CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+        HttpPost post = new HttpPost("https://api.zsxq.com/v2/topics/"+topicId+"/comments");
+        //请求头
+        post.addHeader("cookie",cookie);
+        post.addHeader("Content-Type", "application/json;charset=utf8");
+
+//        String paramJson = "{\n" +
+//                "  \"req_data\": {\n" +
+//                "    \"text\": \"我他妈来啦~！\\n\",\n" +
+//                "    \"image_ids\": [],\n" +
+//                "    \"silenced\": false\n" +
+//                "  }\n" +
+//                "}";
+
+        //这个不是请求头，是负载(palyload)只有post请求才有
+        AnswerReq answerReq = new AnswerReq(new ReqData(text));
+        String paramJson = JSONObject.fromObject(answerReq).toString();
+
+        StringEntity stringEntity = new StringEntity(paramJson, ContentType.create("text/json", "UTF-8"));
+        post.setEntity(stringEntity);
+
+        CloseableHttpResponse response = httpClient.execute(post);
+        if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+            String res = EntityUtils.toString(response.getEntity());
+            AnswerRes answerRes = JSON.parseObject(res, AnswerRes.class);
+            return answerRes.isSucceeded();
+        } else {
+            throw new RuntimeException("answerComment Err Code is " + response.getStatusLine().getStatusCode());
+        }
+    }
+
 }

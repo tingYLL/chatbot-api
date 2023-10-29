@@ -1,5 +1,7 @@
 package cn.bugstack.chatbot.api.domain.zsxq.model.req;
 
+import java.util.List;
+
 /**
  * @author 小傅哥，微信：fustack
  * @description 请求对象
@@ -10,11 +12,17 @@ public class ReqData {
 
     private String text;
     private String[] image_ids = new String[]{};
+
+    private List<String> mentioned_user_ids;
     private boolean silenced;
 
     public ReqData(String text, boolean silenced) {
         this.text = text;
         this.silenced = silenced;
+    }
+
+    public ReqData(String text) {
+        this.text = text;
     }
 
     public String getText() {
@@ -39,5 +47,12 @@ public class ReqData {
 
     public void setSilenced(boolean silenced) {
         this.silenced = silenced;
+    }
+
+    public void setMentioned_user_ids(List<String> mentioned_user_ids){
+        this.mentioned_user_ids = mentioned_user_ids;
+    }
+    public List<String> getMentioned_user_ids(){
+        return this.mentioned_user_ids;
     }
 }
